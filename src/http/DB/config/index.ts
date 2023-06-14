@@ -1,7 +1,7 @@
 import {Sequelize, SequelizeOptions} from "sequelize-typescript";
-import {getAllModels} from "./models";
-import {getDbConfig} from "./config/dbConfig";
-import {getLogger} from "../helpers/logger";
+import {getAllModels} from "../models";
+import {getDbConfig} from "./dbConfig";
+import {getLogger} from "../../../helpers/logger";
 
 
 const logger = getLogger("DB CONNECTION - INDEX");

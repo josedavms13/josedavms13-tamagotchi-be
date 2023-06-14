@@ -12,7 +12,7 @@ export function getDbConfig(): tDbConfig {
    }
 }
 
-function getEnvironment(): Environments {
+export function getEnvironment(): Environments {
    if (process.env.ENVIRONMENT === "development") {
       return Environments.development;
    }

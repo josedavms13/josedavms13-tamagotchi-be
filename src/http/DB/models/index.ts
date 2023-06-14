@@ -1,8 +1,9 @@
 import {ModelCtor} from "sequelize-typescript/dist/model/model/model";
 import {readdirSync} from "fs";
 
-import {getLogger} from "../../helpers/logger";
-import {getFileName} from "../../utils/filePathTools";
+import {getLogger} from "../../../helpers/logger";
+import {getFileName} from "../../../helpers/utils/filePathTools";
+
 
 const logger = getLogger("MODELS - INDEX");
 

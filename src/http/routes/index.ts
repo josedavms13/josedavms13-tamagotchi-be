@@ -2,7 +2,8 @@ import {Request, Response, Router} from "express";
 import {getLogger} from "../../helpers/logger";
 import {Environments} from "../DB/config/enums";
 import {getEnvironment} from "../DB/config/dbConfig";
-import taskRoutes from "./task.routes";
+import taskRoutes from "./expample.routes";
+import userRutes from "./user.rutes";
 
 const logger = getLogger("ROUTES");
 
@@ -10,7 +11,7 @@ const logger = getLogger("ROUTES");
 const router = Router();
 
 router.use("/task", taskRoutes);
-
+router.use("/users", userRutes)
 
 router.get("/", (req: Request, res: Response) => {
    if (getEnvironment() === Environments.development) {

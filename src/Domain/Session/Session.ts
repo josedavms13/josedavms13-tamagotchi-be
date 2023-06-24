@@ -40,7 +40,7 @@ export class Session {
    ) {
       this.ioServer = ioServer;
       this._io = new Server(this.ioServer, {cors: {origin: "*"}});
-      this.roomName = gameName;
+      this.roomName = gameName + v4();
       this._maxAllowedPlayers = maxAllowedPlayers;
       this._minRequiredPlayers = minRequiredPlayers;
       this._onPlayerConnected = onPlayerConnected;
@@ -59,6 +59,14 @@ export class Session {
       this._timer.start();
       // New player joins the game
       this._io.on(SocketsEvents.Connect, (socket) => {
+
+         if (this._sessionPlayerCount >= this._maxAllowedPlayers) {
+            socket.emit(SocketsEvents.MaxPlayersFulfilled, {
+               message: "Max allowed players reached",
+            });
+            return;
+         }
+
          const clientId = socket.id;
          const receivedPlayerName = socket.handshake.query.playerName as string;
          if (!receivedPlayerName) {
@@ -75,6 +83,7 @@ export class Session {
                playerName: receivedPlayerName,
                playerId: clientId,
             });
+            this._sessionPlayerCount++;
             socket.emit(SocketsEvents.SuccessConnect, {
                code: SocketResultCode.successConnect,
                message: `Welcome to the game ${ receivedPlayerName }!`,
@@ -84,8 +93,9 @@ export class Session {
                   this._minRequiredPlayers - this._sessionPlayerCount
                } missing`,
             });
-            this._io.to(this.roomName).emit(SocketsEvents.InternalMessage, {
-               message: `Player ${ receivedPlayerName } joined the game!`,
+            this._io.to(this.roomName).emit(SocketsEvents.AddPlayer, {
+               arePlayerCompleted: this._sessionPlayerCount ===
+                  this._minRequiredPlayers,
             });
             this._sessionPlayerCount++;
             if (this._sessionPlayerCount === this._maxAllowedPlayers) {
@@ -93,12 +103,6 @@ export class Session {
                   message: "All players have joined the game!",
                });
             }
-         } else {
-            socket.emit(SocketsEvents.InternalMessage, {
-               code: SocketResultCode.maxPlayers,
-               message: "Maximum number of players reached!",
-            });
-            socket.disconnect(true);
          }
       });
    }
@@ -119,7 +123,7 @@ export class Session {
    }
 
    private getRoomName() {
-      return this.roomName + v4();
+      return this.roomName;
    }
 
    get isSessionStarted(): boolean {

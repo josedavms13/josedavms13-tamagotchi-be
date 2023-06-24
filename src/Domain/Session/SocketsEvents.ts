@@ -3,8 +3,10 @@ export const SocketsEvents = {
    ConnectionError: "connectionError",
    Disconnect: "forceDisconnect",
    InternalMessage: "internalMessage",
+   AddPlayer: "addPlayer",
    SuccessConnect: "successConnect",
    MinPlayersFulfilled: "minPlayersFulfilled",
+   MaxPlayersFulfilled: "maxPlayersFulfilled",
 } as const;
 
 export const SocketResultCode = {

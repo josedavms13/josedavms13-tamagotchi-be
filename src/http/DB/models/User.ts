@@ -3,16 +3,24 @@ import {Column, DataType, Model, Table} from "sequelize-typescript";
 
 
 @Table
-export class Example extends Model<Example, exampleAttributes> {
+export class User extends Model<User, IUserCreateAttributes> {
    @Column({type: DataType.STRING})
    declare name: string;
+
+   @Column({
+      type: DataType.STRING,
+      allowNull: false,
+      unique: true,
+   })
+   declare email: string;
 
    /* @HasMany(()=> Model, {foreignKey: "foreignKey"})
    declare models: Model[]; */
 }
 
 
-interface exampleAttributes {
+interface IUserCreateAttributes {
    name: string,
-   other: string,
+   userName: string,
+   password: string,
 }

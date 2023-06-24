@@ -12,7 +12,14 @@ export class User extends Model<User, IUserCreateAttributes> {
       allowNull: false,
       unique: true,
    })
-   declare email: string;
+   declare userName: string;
+
+   @Column({
+      type: DataType.STRING,
+      allowNull: false,
+
+   })
+   declare password: string;
 
    /* @HasMany(()=> Model, {foreignKey: "foreignKey"})
    declare models: Model[]; */

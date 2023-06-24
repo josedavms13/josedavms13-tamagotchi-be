@@ -4,6 +4,7 @@ import {readdirSync} from "fs";
 import {getLogger} from "../../../helpers/logger";
 import {getFileName} from "../../../helpers/utils/filePathTools";
 import {User} from "./User";
+import {Pet} from "./Pet";
 
 
 const logger = getLogger("MODELS - INDEX");

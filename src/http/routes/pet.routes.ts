@@ -6,7 +6,5 @@ const router = Router();
 
 router.post("/create-user");
 router.get("/all-users");
-router.put("/path");
-
 
 export default router;

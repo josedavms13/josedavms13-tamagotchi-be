@@ -4,6 +4,7 @@ import {Environments} from "../DB/config/enums";
 import {getEnvironment} from "../DB/config/dbConfig";
 import taskRoutes from "./expample.routes";
 import userRutes from "./user.rutes";
+import petRoutes from "./pet.routes";
 
 const logger = getLogger("ROUTES");
 
@@ -11,7 +12,8 @@ const logger = getLogger("ROUTES");
 const router = Router();
 
 router.use("/task", taskRoutes);
-router.use("/users", userRutes)
+router.use("/users", userRutes);
+router.use("/pet", petRoutes);
 
 router.get("/", (req: Request, res: Response) => {
    if (getEnvironment() === Environments.development) {

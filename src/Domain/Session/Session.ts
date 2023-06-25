@@ -48,7 +48,12 @@ export class Session {
          0,
          sessionTime,
          0,
-         this.onTimerTick, this.onSessionTimeout);
+         () => {
+            this.onTimerTick();
+         },
+         () => {
+            this.onSessionTimeout();
+         });
       logger.log("Starting webSocket server");
       this.start();
    }
@@ -59,7 +64,6 @@ export class Session {
       this._timer.start();
       // New player joins the game
       this._io.on(SocketsEvents.Connect, (socket) => {
-
          if (this._sessionPlayerCount >= this._maxAllowedPlayers) {
             socket.emit(SocketsEvents.MaxPlayersFulfilled, {
                message: "Max allowed players reached",
@@ -107,16 +111,21 @@ export class Session {
       });
    }
 
-   private onSessionTimeout() {
-      logger.log("Stopping");
-      this.closeServer();
-   }
-
-   private closeServer() {
+   public closeServer() {
       logger.log("Closing server");
       this._io.to(this.roomName).emit("closeConnection");
       this._io.removeAllListeners();
    }
+
+   private onSessionTimeout() {
+      logger.log("Stopping");
+      if (this.closeServer && typeof this.closeServer === "function") {
+         this.closeServer();
+      } else {
+         console.log("Close server is type " + typeof this.closeServer);
+      }
+   }
+
 
    private onTimerTick() {
 

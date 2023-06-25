@@ -6,7 +6,8 @@ import {getLogger} from "../../../helpers/logger";
 
 const logger = getLogger("GAME CORE CLASS");
 
-export abstract class Game {
+export abstract class GameCore {
+   protected _sessionId: number;
    protected readonly _gameName: GamesNames;
    protected _session: Session;
    protected _players: Player[] = [];
@@ -16,13 +17,17 @@ export abstract class Game {
    protected _minRequiredPlayers: number;
 
    protected constructor(
+      sessionId: number,
       gameName: GamesNames,
       sessionTime: number,
       maxAllowedPlayers: number,
       minRequiredPlayers: number) {
+      this._sessionId = sessionId;
       this._gameName = gameName;
       this._maxAllowedPlayers = maxAllowedPlayers;
       this._minRequiredPlayers = minRequiredPlayers;
+      console.log(`The game "${
+         gameName }" will last ${ sessionTime } minutes`);
       this._session = new Session(
          httpServer,
          gameName.toString(),
@@ -71,11 +76,8 @@ export abstract class Game {
       return this._turn;
    }
 
-   private addPlayer({
-      playerName,
-      playerId,
-   }: { playerName: string, playerId: string }): void {
-
+   public close(): void {
+      this._session.closeServer();
    }
 
    get currentPlayer(): Player {
@@ -84,5 +86,9 @@ export abstract class Game {
       } else {
          throw new Error("Game hasn't started yet");
       }
+   }
+
+   get id() {
+      return this._sessionId;
    }
 }

@@ -19,5 +19,5 @@ export interface IFailedOperationFromDatabase {
    success: false,
    resStatus?: number,
    message: string,
-   dbData?: any
+   reason?: any
 }

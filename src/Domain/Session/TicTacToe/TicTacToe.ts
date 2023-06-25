@@ -1,4 +1,4 @@
-import {Game} from "../GameCore/Game";
+import {GameCore} from "../GameCore/GameCore";
 import {GamesNames} from "../GameCore/games.types";
 import {
    IEmitBadMovement,
@@ -8,14 +8,16 @@ import {
 import {TicTacEvents} from "./TicTacEvents";
 
 
-export class TicTacToe extends Game {
+export class TicTacToe extends GameCore {
    private _fields: ITicTacFieldData[] = initialFieldsState;
 
    constructor(
+      id: number,
       sessionTime: number,
       maxAllowedPlayers: number,
       minRequiredPlayers: number) {
       super(
+         id,
          GamesNames.TIC_TAC,
          sessionTime,
          maxAllowedPlayers,

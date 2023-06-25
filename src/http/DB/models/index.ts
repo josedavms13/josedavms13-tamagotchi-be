@@ -3,14 +3,11 @@ import {readdirSync} from "fs";
 
 import {getLogger} from "../../../helpers/logger";
 import {getFileName} from "../../../helpers/utils/filePathTools";
-import {User} from "./User";
 
 
 const logger = getLogger("MODELS - INDEX");
 
 export const models: tModelCheck[] = [
-   {model: User, name: "User"},
-   {model: Pet, name: "Pet"},
 ];
 
 type tModelCheck = {

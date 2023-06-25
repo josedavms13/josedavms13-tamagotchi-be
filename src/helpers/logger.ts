@@ -11,15 +11,13 @@ class Logger {
             app: {type: "file", filename: "application.log"},
          },
          categories: {
-            default: {appenders: ["out"], level: "trace"},
-            app: {appenders: ["app"], level: "trace"},
+            default: {appenders: ["out", "app"], level: "debug"},
          },
       });
       this.logger = log4js.getLogger(category);
    }
 
    public log(message: string | any) {
-      console.log(message);
       if (typeof message === "string") {
          this.logger.debug(message);
       } else {
@@ -28,17 +26,14 @@ class Logger {
    }
 
    public error(message: string | any) {
-      console.error(message);
       this.logger.error(message);
    }
 
    public trace(message: any) {
-      console.log(message);
       this.logger.trace(message);
    }
 
    public success(message: string) {
-      console.log(`\t ======== ${ message.toUpperCase() } ========`);
       this.logger.info(`\t ======== ${ message.toUpperCase() } ========`);
    }
 }

@@ -122,7 +122,7 @@ export class Session {
       if (this.closeServer && typeof this.closeServer === "function") {
          this.closeServer();
       } else {
-         console.log("Close server is type " + typeof this.closeServer);
+         logger.log("Close server is type " + typeof this.closeServer);
       }
    }
 
@@ -141,7 +141,7 @@ export class Session {
 
    public addIoEvent(eventName: string, payload: tIoEvent) {
       this._io.on(eventName, (data) => {
-         console.log(data);
+         logger.log(data);
       });
    }
 

@@ -6,8 +6,9 @@ import {
    ITicTacFieldData, tFieldData,
 } from "./ticTacToe.types";
 import {TicTacEvents} from "./TicTacEvents";
+import {getLogger} from "../../../helpers/logger";
 
-
+const logger = getLogger("TicTacToe || Class");
 export class TicTacToe extends GameCore {
    private _fields: ITicTacFieldData[] = initialFieldsState;
 
@@ -58,7 +59,7 @@ export class TicTacToe extends GameCore {
 
    injectEvents(): void {
       this._session.addIoEvent(TicTacEvents.IncomingMovement, (socket) => {
-         console.log(socket);
+         logger.log(socket);
       });
    }
 }

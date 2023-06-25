@@ -26,8 +26,7 @@ export abstract class GameCore {
       this._gameName = gameName;
       this._maxAllowedPlayers = maxAllowedPlayers;
       this._minRequiredPlayers = minRequiredPlayers;
-      console.log(`The game "${
-         gameName }" will last ${ sessionTime } minutes`);
+      logger.log(`The game will last ${ sessionTime } minutes`);
       this._session = new Session(
          httpServer,
          gameName.toString(),

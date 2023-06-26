@@ -2,12 +2,15 @@ import {Response} from "express";
 import {closeSession, createSession, Game} from "./Domain/sessionManager";
 
 export function startSessionControl(req: any, res: Response) {
-   const {game, gameTime} = req.body;
+   const {game, roomName, gameTime} = req.body;
    if (!game) {
       return res.status(400).json({error: "game is required"});
    }
    if (!availableGames.includes(game)) {
       return res.status(400).json({error: "game is not available"});
+   }
+   if (!roomName) {
+      return res.status(400).json({error: "roomName is required"});
    }
    let gameType: Game = Game.TicTacToe;
    switch (game as keyof typeof availableGames) {
@@ -15,7 +18,7 @@ export function startSessionControl(req: any, res: Response) {
       gameType = Game.TicTacToe;
       break;
    }
-   const startedSession = createSession(gameType, gameTime);
+   const startedSession = createSession(gameType, roomName, gameTime);
    return res.json(startedSession);
 }
 

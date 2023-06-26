@@ -1,14 +1,24 @@
 import {GameCore} from "../../../../Domain/Session/GameCore/GameCore";
+import {getLogger} from "../../../../helpers/logger";
 
+
+const logger = getLogger("ActiveSessions | Class");
 
 export class ActiveSessions {
    private _gameSessions: GameCore[] = [];
    private _activeSessions: number = 0;
    private static _instance: ActiveSessions;
+   private readonly _maxActiveSessions = 4;
 
-   public addGameSession(game: GameCore) {
-      this._gameSessions.push(game);
-      this._activeSessions++;
+   public addGameSession(game: GameCore): GameCore {
+      if (this._activeSessions + 1 < this._maxActiveSessions) {
+         this._gameSessions.push(game);
+         this._activeSessions++;
+         return game;
+      } else {
+         logger.error("Maximum number of active sessions");
+         throw new Error("Maximum number of active sessions");
+      }
    }
 
    public removeSessions(gameId: number) {

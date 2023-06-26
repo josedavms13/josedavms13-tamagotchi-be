@@ -13,11 +13,13 @@ export class TicTacToe extends GameCore {
    private _fields: ITicTacFieldData[] = initialFieldsState;
 
    constructor(
+      roomName: string,
       id: number,
       sessionTime: number,
       maxAllowedPlayers: number,
       minRequiredPlayers: number) {
       super(
+         roomName,
          id,
          GamesNames.TIC_TAC,
          sessionTime,

@@ -3,19 +3,37 @@ import {TicTacToe} from "../../../../Domain/Session/TicTacToe/TicTacToe";
 import {tDBOperationOutput} from "../../controllers.types";
 
 
-export function createSession(game: Game, gameTime?: number)
+export function createSession(game: Game, roomName: string, gameTime?: number)
    : tDBOperationOutput<number> {
    const activeSessions = ActiveSessions.getInstance();
    const sessionId = ActiveSessions.generateSessionId();
    try {
       switch (game) {
       case Game.TicTacToe:
-         activeSessions.addGameSession(new TicTacToe(
-            sessionId,
-            15,
-            2,
-            2,
-         ));
+         try {
+            const createdSession = activeSessions.addGameSession(new TicTacToe(
+               roomName,
+               sessionId,
+               15,
+               2,
+               2,
+            ));
+            return {
+               success: true,
+               resStatus: 200,
+               dbData: {
+                  sessionId,
+                  roomName: createdSession.gameRoomName,
+               },
+            };
+         } catch (e) {
+            return {
+               success: false,
+               resStatus: 204,
+               message: "Error creating session",
+               reason: e,
+            };
+         }
       }
       return {
          success: true,

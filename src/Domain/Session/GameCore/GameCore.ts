@@ -10,6 +10,7 @@ export abstract class GameCore {
    protected _sessionId: number;
    protected readonly _gameName: GamesNames;
    protected _session: Session;
+   protected _gameRoomName: string;
    protected _players: Player[] = [];
    protected _currentPlayer: Player | null = null;
    protected _turn: number = -1;
@@ -17,6 +18,7 @@ export abstract class GameCore {
    protected _minRequiredPlayers: number;
 
    protected constructor(
+      roomName: string,
       sessionId: number,
       gameName: GamesNames,
       sessionTime: number,
@@ -28,6 +30,7 @@ export abstract class GameCore {
       this._minRequiredPlayers = minRequiredPlayers;
       logger.log(`The game will last ${ sessionTime } minutes`);
       this._session = new Session(
+         roomName,
          httpServer,
          gameName.toString(),
          sessionTime,
@@ -38,6 +41,7 @@ export abstract class GameCore {
             this._players.push(new Player(playerId, playerName));
          },
       );
+      this._gameRoomName = this._session.getRoomName;
    }
 
    public abstract injectEvents(): void;
@@ -89,5 +93,9 @@ export abstract class GameCore {
 
    get id() {
       return this._sessionId;
+   }
+
+   get gameRoomName(): string {
+      return this._gameRoomName;
    }
 }

@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(routes);
+app.use("/api", routes);
 export const httpServer = http.createServer(app);
 
 const port = Number(process.env.PORT);

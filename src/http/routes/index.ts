@@ -11,7 +11,7 @@ const logger = getLogger("ROUTES");
 const router = Router();
 
 router.use("/task", taskRoutes);
-router.use("/users", userRutes)
+router.use("/users", userRutes);
 
 router.get("/", (req: Request, res: Response) => {
    if (getEnvironment() === Environments.development) {

@@ -62,7 +62,6 @@ export class Session {
    private socketConnect() {
       logger.log("Starting session");
       this._isSessionStarted = true;
-      this._timer.start();
       // New player joins the game
       this._io.on(SocketsEvents.Connect, (socket) => {
          if (this._sessionPlayerCount >= this._maxAllowedPlayers) {

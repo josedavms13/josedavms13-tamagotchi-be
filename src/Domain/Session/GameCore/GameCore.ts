@@ -37,7 +37,8 @@ export abstract class GameCore {
          maxAllowedPlayers,
          minRequiredPlayers,
          ({playerName, playerId}) => {
-            logger.log(`Adding player ${ playerName } with id ${ playerId }`);
+            logger.log(`Adding player ${ playerName } with id ${
+               playerId } to room: ${ this._gameRoomName }`);
             this._players.push(new Player(playerId, playerName));
          },
       );

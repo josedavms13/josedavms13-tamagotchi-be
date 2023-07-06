@@ -1,13 +1,13 @@
 import {Router} from "express";
 import {
    closeSessionControl,
-   startSessionControl,
+   createWSServer,
 } from "../controllers/Session/Session.controller";
 
 // eslint-disable-next-line new-cap
 const router = Router();
 
-router.post("/create-session", startSessionControl);
+router.get("/create-session", createWSServer);
 router.post("/close-session", closeSessionControl);
 
 export default router;

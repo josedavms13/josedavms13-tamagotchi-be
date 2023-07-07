@@ -1,4 +1,4 @@
-import {Game} from "../GameCore/Game";
+import {GameCore} from "../GameCore/GameCore";
 import {GamesNames} from "../GameCore/games.types";
 import {
    IEmitBadMovement,
@@ -6,16 +6,21 @@ import {
    ITicTacFieldData, tFieldData,
 } from "./ticTacToe.types";
 import {TicTacEvents} from "./TicTacEvents";
+import {getLogger} from "../../../helpers/logger";
 
-
-export class TicTacToe extends Game {
+const logger = getLogger("TicTacToe || Class");
+export class TicTacToe extends GameCore {
    private _fields: ITicTacFieldData[] = initialFieldsState;
 
    constructor(
+      roomName: string,
+      id: number,
       sessionTime: number,
       maxAllowedPlayers: number,
       minRequiredPlayers: number) {
       super(
+         roomName,
+         id,
          GamesNames.TIC_TAC,
          sessionTime,
          maxAllowedPlayers,
@@ -56,7 +61,7 @@ export class TicTacToe extends Game {
 
    injectEvents(): void {
       this._session.addIoEvent(TicTacEvents.IncomingMovement, (socket) => {
-         console.log(socket);
+         logger.log(socket);
       });
    }
 }

@@ -16,13 +16,13 @@ export class Timer {
       hour: number,
       minutes: number,
       seconds: number,
-      callback?: () => void,
+      onTimerTick?: () => void,
       timeOutCallback?: () => void,
    ) {
       this._hour = hour;
       this._minutes = minutes;
       this._seconds = seconds;
-      this._secondCallback = callback;
+      this._secondCallback = onTimerTick;
       this._timeOutCallback = timeOutCallback;
    }
 

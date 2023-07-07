@@ -5,7 +5,6 @@ import {tIOServer} from "./ioServer.types";
 import {Server} from "socket.io";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
 import {Timer} from "./timer/Timer";
-import {v4} from "uuid";
 import {SocketResultCode, SocketsEvents} from "./SocketsEvents";
 import {tEventPayload} from "./TicTacToe/TicTacEvents";
 import {tIoEvent} from "./TicTacToe/ticTacToe.types";
@@ -30,7 +29,9 @@ export class Session {
       playerId: string, playerName: string
    }) => void;
 
-   constructor(ioServer: tIOServer,
+   constructor(
+      roomName: string,
+      ioServer: tIOServer,
       gameName: string,
       sessionTime: number,
       maxAllowedPlayers: number,
@@ -40,7 +41,7 @@ export class Session {
    ) {
       this.ioServer = ioServer;
       this._io = new Server(this.ioServer, {cors: {origin: "*"}});
-      this.roomName = gameName + v4();
+      this.roomName = roomName + `-${ this.getRandomNumber() }`;
       this._maxAllowedPlayers = maxAllowedPlayers;
       this._minRequiredPlayers = minRequiredPlayers;
       this._onPlayerConnected = onPlayerConnected;
@@ -48,18 +49,21 @@ export class Session {
          0,
          sessionTime,
          0,
-         this.onTimerTick, this.onSessionTimeout);
+         () => {
+            this.onTimerTick();
+         },
+         () => {
+            this.onSessionTimeout();
+         });
       logger.log("Starting webSocket server");
-      this.start();
+      this.socketConnect();
    }
 
-   private start() {
+   private socketConnect() {
       logger.log("Starting session");
       this._isSessionStarted = true;
-      this._timer.start();
       // New player joins the game
       this._io.on(SocketsEvents.Connect, (socket) => {
-
          if (this._sessionPlayerCount >= this._maxAllowedPlayers) {
             socket.emit(SocketsEvents.MaxPlayersFulfilled, {
                message: "Max allowed players reached",
@@ -68,7 +72,25 @@ export class Session {
          }
 
          const clientId = socket.id;
-         const receivedPlayerName = socket.handshake.query.playerName as string;
+         const onConnectionQuery = JSON.parse(
+            socket.handshake.query.body as any);
+         const {
+            playerName: receivedPlayerName,
+            roomName: receivedRoomName} = onConnectionQuery.query;
+         if (!receivedRoomName) {
+            socket.emit(SocketsEvents.ConnectionError, {
+               message: "Room name not provided",
+            });
+            socket.disconnect(true);
+            return;
+         }
+         if (receivedRoomName !== this.roomName) {
+            socket.emit(SocketsEvents.ConnectionError, {
+               message: "Wrong room name",
+            });
+            socket.disconnect(true);
+            return;
+         }
          if (!receivedPlayerName) {
             socket.emit(SocketsEvents.ConnectionError, {
                message: "Player Name is required",
@@ -78,7 +100,7 @@ export class Session {
          }
          // Verify that new player can join if queue is full
          if (this._sessionPlayerCount < this._maxAllowedPlayers) {
-            socket.join(this.roomName);
+            socket.join(receivedRoomName);
             this._onPlayerConnected({
                playerName: receivedPlayerName,
                playerId: clientId,
@@ -107,22 +129,27 @@ export class Session {
       });
    }
 
-   private onSessionTimeout() {
-      logger.log("Stopping");
-      this.closeServer();
-   }
-
-   private closeServer() {
+   public closeServer() {
       logger.log("Closing server");
       this._io.to(this.roomName).emit("closeConnection");
       this._io.removeAllListeners();
    }
 
+   private onSessionTimeout() {
+      logger.log("Stopping");
+      if (this.closeServer && typeof this.closeServer === "function") {
+         this.closeServer();
+      } else {
+         logger.log("Close server is type " + typeof this.closeServer);
+      }
+   }
+
+
    private onTimerTick() {
 
    }
 
-   private getRoomName() {
+   get getRoomName() {
       return this.roomName;
    }
 
@@ -132,7 +159,7 @@ export class Session {
 
    public addIoEvent(eventName: string, payload: tIoEvent) {
       this._io.on(eventName, (data) => {
-         console.log(data);
+         logger.log(data);
       });
    }
 
@@ -142,5 +169,9 @@ export class Session {
 
    public emitEvent<T>(eventName: string, data: T, callBack?: () => void) {
       this._io.to(this.roomName).emit(eventName, callBack);
+   }
+
+   private getRandomNumber() {
+      return Math.floor(Math.random() * 200);
    }
 }

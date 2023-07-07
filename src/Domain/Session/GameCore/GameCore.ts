@@ -6,9 +6,11 @@ import {getLogger} from "../../../helpers/logger";
 
 const logger = getLogger("GAME CORE CLASS");
 
-export abstract class Game {
+export abstract class GameCore {
+   protected _sessionId: number;
    protected readonly _gameName: GamesNames;
    protected _session: Session;
+   protected _gameRoomName: string;
    protected _players: Player[] = [];
    protected _currentPlayer: Player | null = null;
    protected _turn: number = -1;
@@ -16,24 +18,31 @@ export abstract class Game {
    protected _minRequiredPlayers: number;
 
    protected constructor(
+      roomName: string,
+      sessionId: number,
       gameName: GamesNames,
       sessionTime: number,
       maxAllowedPlayers: number,
       minRequiredPlayers: number) {
+      this._sessionId = sessionId;
       this._gameName = gameName;
       this._maxAllowedPlayers = maxAllowedPlayers;
       this._minRequiredPlayers = minRequiredPlayers;
+      logger.log(`The game will last ${ sessionTime } minutes`);
       this._session = new Session(
+         roomName,
          httpServer,
          gameName.toString(),
          sessionTime,
          maxAllowedPlayers,
          minRequiredPlayers,
          ({playerName, playerId}) => {
-            logger.log(`Adding player ${ playerName } with id ${ playerId }`);
+            logger.log(`Adding player ${ playerName } with id ${
+               playerId } to room: ${ this._gameRoomName }`);
             this._players.push(new Player(playerId, playerName));
          },
       );
+      this._gameRoomName = this._session.getRoomName;
    }
 
    public abstract injectEvents(): void;
@@ -71,11 +80,8 @@ export abstract class Game {
       return this._turn;
    }
 
-   private addPlayer({
-      playerName,
-      playerId,
-   }: { playerName: string, playerId: string }): void {
-
+   public close(): void {
+      this._session.closeServer();
    }
 
    get currentPlayer(): Player {
@@ -84,5 +90,13 @@ export abstract class Game {
       } else {
          throw new Error("Game hasn't started yet");
       }
+   }
+
+   get id() {
+      return this._sessionId;
+   }
+
+   get gameRoomName(): string {
+      return this._gameRoomName;
    }
 }

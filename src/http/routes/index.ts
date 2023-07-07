@@ -2,16 +2,14 @@ import {Request, Response, Router} from "express";
 import {getLogger} from "../../helpers/logger";
 import {Environments} from "../DB/config/enums";
 import {getEnvironment} from "../DB/config/dbConfig";
-import taskRoutes from "./expample.routes";
-import userRutes from "./user.rutes";
+import sessionRoutes from "./session.routes";
 
 const logger = getLogger("ROUTES");
 
 // eslint-disable-next-line new-cap
 const router = Router();
 
-router.use("/task", taskRoutes);
-router.use("/users", userRutes);
+router.use("/session", sessionRoutes);
 
 router.get("/", (req: Request, res: Response) => {
    if (getEnvironment() === Environments.development) {

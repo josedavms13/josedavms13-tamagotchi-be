@@ -5,6 +5,8 @@ export const SocketsEvents = {
    InternalMessage: "internalMessage",
    AddPlayer: "addPlayer",
    SuccessConnect: "successConnect",
+   CreateRoom: "createRoom",
+   RoomCreated: "roomCreated",
    MinPlayersFulfilled: "minPlayersFulfilled",
    MaxPlayersFulfilled: "maxPlayersFulfilled",
 } as const;

@@ -8,6 +8,7 @@ import {getLogger} from "../../../helpers/logger";
 const logger = getLogger("SESSION | Controller");
 
 export function createWSServer(req: any, res: Response) {
+   logger.log("Creating WSServer by controller");
    socketConnect(res);
 }
 
@@ -19,7 +20,3 @@ export function closeSessionControl(req: any, res: Response) {
       res.status(500);
    }
 }
-
-const availableGames = [
-   "ticTacToe",
-] as const;

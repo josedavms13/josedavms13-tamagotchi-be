@@ -58,8 +58,7 @@ function createIoServer(port: number): Server {
 
    io.on(SocketsEvents.CreateRoom, (data) => {
       console.log(data);
-      logger.log(`Creating room`);
-
+      logger.log("Creating room");
    });
 
    return io;
